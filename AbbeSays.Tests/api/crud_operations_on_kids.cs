@@ -1,16 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using Nancy;
 using Nancy.Testing;
 using NSubstitute;
 using Should.Fluent;
 using Xunit;
+using System.Linq;
 
 namespace AbbeSays.Tests.api
 {
+
     public class crud_operations_on_kids
     {
         private Browser _browser;
         private readonly IKidRepository _repository;
+
+        private static Action<BrowserContext> AcceptJSONBrowserContext
+        {
+            get
+            {
+                return context =>
+                {
+                    context.Header("Accept", "application/json");
+                };
+            }
+        }
 
         public crud_operations_on_kids()
         {
@@ -26,51 +40,39 @@ namespace AbbeSays.Tests.api
         public void should_get_an_existing_kid()
         {
             // Arrange
-            _repository.GetKid(123).Returns(new Kid {Id = 123, Name = "Albert", BirthDate =DateTime.Parse("2008-10-24")});
+            _repository.GetKid(123).Returns(new Kid { Id = 123, Name = "Albert", BirthDate = DateTime.Parse("2008-10-24"), FamilyName = "Hammarberg" });
 
             // Act
-            var resposne = _browser.Get("/Kid/123", context =>
-            {
-                context.Header("Accept", "application/json");
-            });
+            var resposne = _browser.Get("/Kid/123", AcceptJSONBrowserContext);
 
             // Assert
             resposne.StatusCode.Should().Equal(HttpStatusCode.OK);
             var kid = resposne.Body.DeserializeJson<Kid>();
             kid.Id.Should().Equal(123);
             kid.Name.Should().Equal("Albert");
+            kid.FamilyName.Should().Equal("Hammarberg");
             kid.BirthDate.Should().Equal(DateTime.Parse("2008-10-24"));
         }
-    }
 
-    public class Kid
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-    }
-
-    public interface IKidRepository
-    {
-        Kid GetKid(int id);
-    }
-
-    public class KidRepository : IKidRepository
-    {
-        public Kid GetKid(int id)
+        [Fact]
+        public void should_get_a_list_of_kids_for_a_family()
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class KidApiModule : NancyModule
-    {
-        public KidApiModule(IKidRepository kidRepository)
-        {
-            Get["/Kid/{id}"] = parameter =>
+            // Arrange
+            _repository.GetKids("Hammarberg").Returns(new List<Kid>
             {
-                return kidRepository.GetKid(parameter.Id);
-            };
+                new Kid{Id = 1, FamilyName = "Hammarberg", Name = "Albert"},
+                new Kid{Id = 2, FamilyName = "Hammarberg", Name = "Arivd"},
+                new Kid{Id = 3, FamilyName = "Hammarberg", Name = "Gustav"}
+            });
+
+            // Act
+            var response = _browser.Get("/Kid/Family/Hammarberg", AcceptJSONBrowserContext);
+
+            // Assert
+            response.StatusCode.Should().Equal(HttpStatusCode.OK);
+            var kids = response.Body.DeserializeJson<List<Kid>>();
+            kids.Count.Should().Equal(3);
+            kids.Any(k => k.FamilyName != "Hammarberg").Should().Equal(false);
         }
     }
 }

@@ -60,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="api\crud_operations_on_kids.cs" />
+    <Compile Include="api\IKidRepository.cs" />
+    <Compile Include="api\Kid.cs" />
+    <Compile Include="api\KidApiModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
