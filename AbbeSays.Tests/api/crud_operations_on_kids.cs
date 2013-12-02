@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Nancy;
 using Nancy.Testing;
 using NSubstitute;
+using NSubstitute.Core.Arguments;
 using Should.Fluent;
 using Xunit;
 using System.Linq;
@@ -73,6 +74,30 @@ namespace AbbeSays.Tests.api
             var kids = response.Body.DeserializeJson<List<Kid>>();
             kids.Count.Should().Equal(3);
             kids.Any(k => k.FamilyName != "Hammarberg").Should().Equal(false);
+        }
+
+        [Fact]
+        public void should_create_a_new_kid()
+        {
+            // Arrange
+            var kid = new Kid { Id = 1, Name = "Albert", BirthDate = DateTime.Parse("2008-10-24"), FamilyName = "Hammarberg" };
+            _repository.CreateKid(Arg.Any<Kid>()).Returns(kid);
+
+            // Act
+            var response = _browser.Post("/Kid", context =>
+            {
+                context.Header("Accept", "application/json");
+                
+                context.FormValue("Name", "Albert");
+                context.FormValue("FamilyName", "Hammarberg");
+                context.FormValue("BirthDate", "2008-10-24");
+            });
+
+            // Assert
+            response.StatusCode.Should().Equal(HttpStatusCode.Created);
+            _repository.Received(1).CreateKid(Arg.Any<Kid>());
+            var k = response.Body.DeserializeJson<Kid>();
+            k.Id.Should().Equal(kid.Id);
         }
     }
 }
