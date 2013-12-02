@@ -60,13 +60,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="api\crud_operations_on_kids.cs" />
-    <Compile Include="api\IKidRepository.cs" />
-    <Compile Include="api\Kid.cs" />
-    <Compile Include="api\KidApiModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AbbeSays.Web\AbbeSays.Web.csproj">
+      <Project>{538d6762-1aef-4281-80dd-5b5abc708696}</Project>
+      <Name>AbbeSays.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

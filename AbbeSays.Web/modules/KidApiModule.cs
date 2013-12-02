@@ -1,7 +1,8 @@
-﻿using Nancy;
+﻿using AbbeSays.Web.models;
+using Nancy;
 using Nancy.ModelBinding;
 
-namespace AbbeSays.Tests.api
+namespace AbbeSays.Web.modules
 {
     public class KidApiModule : NancyModule
     {

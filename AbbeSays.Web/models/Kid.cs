@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AbbeSays.Tests.api
+namespace AbbeSays.Web.models
 {
     public class Kid
     {

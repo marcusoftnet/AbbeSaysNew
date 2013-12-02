@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using AbbeSays.Web.models;
+using AbbeSays.Web.modules;
 using Nancy;
 using Nancy.Testing;
 using NSubstitute;
@@ -7,6 +9,7 @@ using NSubstitute.Core.Arguments;
 using Should.Fluent;
 using Xunit;
 using System.Linq;
+using AbbeSays.Web;
 
 namespace AbbeSays.Tests.api
 {

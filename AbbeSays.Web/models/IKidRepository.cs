@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AbbeSays.Tests.api
+namespace AbbeSays.Web.models
 {
     public interface IKidRepository
     {
